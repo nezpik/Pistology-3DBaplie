@@ -2,6 +2,14 @@
 
 A Python application that uses Google's Gemini 2.0 AI to process BAPLIE (EDI) messages and generate interactive 3D visualizations of container ship loading plans.
 
+## Screenshots
+
+### Main Interface
+![BAPLIE 3D Visualizer Interface](Baplie3D.png)
+
+### Container Visualization
+![Container 3D View](Baplie3D_2.png)
+
 ## Features
 
 - Parse BAPLIE EDI messages using direct parsing and AI-powered backup
