@@ -1,88 +1,79 @@
-# BAPLIE 3D Visualizer
+# Terminal Operating System
 
-A Python application that uses Google's Gemini 2.0 AI to process BAPLIE (EDI) messages and generate interactive 3D visualizations of container ship loading plans.
-
-## Screenshots
-
-### Main Interface
-![BAPLIE 3D Visualizer Interface](Baplie3D.png)
-
-### Container Visualization
-![Container 3D View](Baplie3D_2.png)
+This project is a web-based terminal operating system for managing container logistics. It is built with a React frontend and a Node.js backend.
 
 ## Features
 
-- Parse BAPLIE EDI messages using direct parsing and AI-powered backup
-- Interactive 3D visualization of container positions
-- Color-coded container types (GP, RE, OT)
-- Support for 20ft, 40ft, and 45ft containers
-- Real-time error feedback
-- Web-based interface using Dash and Plotly
+- System of container localization (GTC)
+- Digital container structure display
+- Ship structure integration via BAPLIE
+- EDI Hub (Electronic Data Interchange)
+- Digital Container Damage Report (CDR)
+- Digital customs inspection (Visite Douanière)
+- Task tracking dashboard
+- Modernized container history interface
+- Truck Appointment System (TAS)
+- TAS dual interface
 
 ## Prerequisites
 
-- Python 3.9+
-- Google Gemini API key (get one from [Google AI Studio](https://makersuite.google.com/app/apikey))
+- Node.js (v18 or later)
+- npm
+- PostgreSQL
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone https://github.com/nezpik/Pistology-3DBaplie.git
-cd Pistology-3DBaplie
-```
+1.  **Clone the repository:**
 
-2. Install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
 
-3. Set up your environment variables:
-   - Copy `env.example` to `.env`
-   - Replace `your_api_key_here` with your actual Gemini API key
+2.  **Install frontend dependencies:**
+
+    ```bash
+    cd frontend
+    npm install
+    ```
+
+3.  **Install backend dependencies:**
+
+    ```bash
+    cd ../backend
+    npm install
+    ```
+
+4.  **Set up environment variables:**
+
+    -   In the `backend` directory, create a `.env` file and add the following:
+
+        ```
+        DATABASE_URL="postgresql://<user>:<password>@<host>:<port>/<database>"
+        ```
+
+5.  **Set up the database:**
+
+    -   In the `backend` directory, run the following command to create the database schema:
+
+        ```bash
+        npx prisma db push
+        ```
 
 ## Usage
 
-1. Run the application:
-```bash
-python app.py
-```
+1.  **Start the backend server:**
 
-2. Open your web browser and navigate to `http://localhost:8050`
+    ```bash
+    cd backend
+    npm run dev
+    ```
 
-3. Paste your BAPLIE message into the text area
+2.  **Start the frontend development server:**
 
-4. Click "Generate 3D View" to see the visualization
+    ```bash
+    cd ../frontend
+    npm run dev
+    ```
 
-## BAPLIE Message Format
-
-The application supports standard BAPLIE EDI messages. A sample message is provided in `sample_baplie.txt`. The message should contain:
-
-- Container information in EQD segments
-- Location information in LOC segments
-- Container types (GP, RE, OT)
-- Container sizes (20ft, 40ft, 45ft)
-
-## Security Note
-
-- Never commit your `.env` file containing your API key
-- The `.env` file is included in `.gitignore` to prevent accidental commits
-- Use `env.example` as a template to create your own `.env` file
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Google Gemini AI for BAPLIE message processing
-- Plotly and Dash for 3D visualization
-- SMDG for BAPLIE message format documentation
+The frontend will be available at `http://localhost:5173` and the backend at `http://localhost:3001`.
