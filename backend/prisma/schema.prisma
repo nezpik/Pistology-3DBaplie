@@ -1,0 +1,100 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Container {
+  id            String @id @default(cuid())
+  containerId   String @unique
+  bay           Int
+  row           Int
+  tier          Int
+  size          String
+  type          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  location           Location?
+  history            History[]
+  damageReports      DamageReport[]
+  ediMessages        EdiMessage[]
+  customsInspections CustomsInspection[]
+  tasks              Task[]
+  truckAppointments  TruckAppointment[]
+}
+
+model Task {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  status      String
+  assignee    String
+  container   Container? @relation(fields: [containerId], references: [id])
+  containerId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TruckAppointment {
+  id              String @id @default(cuid())
+  truckingCompany String
+  driverName      String
+  licensePlate    String
+  appointmentTime DateTime
+  status          String
+  container       Container @relation(fields: [containerId], references: [id])
+  containerId     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model EdiMessage {
+  id          String @id @default(cuid())
+  messageType String
+  content     String
+  container   Container @relation(fields: [containerId], references: [id])
+  containerId String
+  createdAt   DateTime @default(now())
+}
+
+model CustomsInspection {
+  id          String @id @default(cuid())
+  status      String
+  notes       String
+  inspectedBy String
+  container   Container @relation(fields: [containerId], references: [id])
+  containerId String
+  createdAt   DateTime @default(now())
+}
+
+model DamageReport {
+  id          String @id @default(cuid())
+  description String
+  reportedBy  String
+  photos      String[]
+  container   Container @relation(fields: [containerId], references: [id])
+  containerId String
+  createdAt   DateTime @default(now())
+}
+
+model Location {
+  id          String @id @default(cuid())
+  lat         Float
+  lng         Float
+  container   Container @relation(fields: [containerId], references: [id])
+  containerId String @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model History {
+  id          String @id @default(cuid())
+  event       String
+  description String
+  container   Container @relation(fields: [containerId], references: [id])
+  containerId String
+  createdAt   DateTime @default(now())
+}
