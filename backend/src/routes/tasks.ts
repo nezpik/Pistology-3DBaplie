@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../db';
 
-const prisma = new PrismaClient();
 const router = Router();
 
 router.get('/', async (req, res) => {
@@ -11,11 +10,25 @@ router.get('/', async (req, res) => {
   res.json(tasks);
 });
 
+import { z } from 'zod';
+import { TaskStatus } from '@prisma/client';
+
+const taskSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  status: z.nativeEnum(TaskStatus),
+  assignee: z.string().min(1),
+  containerId: z.string().optional(),
+});
+
 router.post('/', async (req, res) => {
-  const { title, description, status, assignee, containerId } = req.body;
   try {
+    const validation = taskSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
     const task = await prisma.task.create({
-      data: { title, description, status, assignee, containerId },
+      data: validation.data,
     });
     res.json(task);
   } catch (error) {
@@ -24,12 +37,15 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { title, description, status, assignee, containerId } = req.body;
   try {
+    const { id } = req.params;
+    const validation = taskSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
     const task = await prisma.task.update({
       where: { id },
-      data: { title, description, status, assignee, containerId },
+      data: validation.data,
     });
     res.json(task);
   } catch (error) {

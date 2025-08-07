@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../db';
 
-const prisma = new PrismaClient();
 const router = Router();
 
 router.get('/:containerId', async (req, res) => {
@@ -16,11 +15,24 @@ router.get('/:containerId', async (req, res) => {
   }
 });
 
-router.post('/:containerId', async (req, res) => {
-  const { containerId } = req.params;
-  const { lat, lng } = req.body;
+import { z } from 'zod';
 
+const updateLocationSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
+});
+
+router.post('/:containerId', async (req, res) => {
   try {
+    const { containerId } = req.params;
+    const validation = updateLocationSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
+
+    const { lat, lng } = validation.data;
+
     const location = await prisma.location.upsert({
       where: { containerId },
       update: { lat, lng },
