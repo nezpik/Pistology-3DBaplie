@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../db';
 
-const prisma = new PrismaClient();
 const router = Router();
 
 router.get('/:containerId', async (req, res) => {
@@ -13,11 +12,24 @@ router.get('/:containerId', async (req, res) => {
   res.json(ediMessages);
 });
 
-router.post('/:containerId', async (req, res) => {
-  const { containerId } = req.params;
-  const { messageType, content } = req.body;
+import { z } from 'zod';
 
+const createEdiMessageSchema = z.object({
+  messageType: z.string().min(1),
+  content: z.string().min(1),
+});
+
+router.post('/:containerId', async (req, res) => {
   try {
+    const { containerId } = req.params;
+    const validation = createEdiMessageSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
+
+    const { messageType, content } = validation.data;
+
     const ediMessage = await prisma.ediMessage.create({
       data: {
         containerId,

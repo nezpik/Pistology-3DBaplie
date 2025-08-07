@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../db';
 
-const prisma = new PrismaClient();
 const router = Router();
 
 router.get('/:containerId', async (req, res) => {
@@ -13,11 +12,24 @@ router.get('/:containerId', async (req, res) => {
   res.json(history);
 });
 
-router.post('/:containerId', async (req, res) => {
-  const { containerId } = req.params;
-  const { event, description } = req.body;
+import { z } from 'zod';
 
+const createHistoryEventSchema = z.object({
+  event: z.string().min(1),
+  description: z.string().min(1),
+});
+
+router.post('/:containerId', async (req, res) => {
   try {
+    const { containerId } = req.params;
+    const validation = createHistoryEventSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
+
+    const { event, description } = validation.data;
+
     const historyEvent = await prisma.history.create({
       data: {
         containerId,

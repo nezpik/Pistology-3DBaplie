@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../db';
 
-const prisma = new PrismaClient();
 const router = Router();
 
 router.get('/', async (req, res) => {
@@ -11,11 +10,26 @@ router.get('/', async (req, res) => {
   res.json(appointments);
 });
 
+import { z } from 'zod';
+import { AppointmentStatus } from '@prisma/client';
+
+const appointmentSchema = z.object({
+  truckingCompany: z.string().min(1),
+  driverName: z.string().min(1),
+  licensePlate: z.string().min(1),
+  appointmentTime: z.string().datetime(),
+  status: z.nativeEnum(AppointmentStatus),
+  containerId: z.string().min(1),
+});
+
 router.post('/', async (req, res) => {
-  const { truckingCompany, driverName, licensePlate, appointmentTime, status, containerId } = req.body;
   try {
+    const validation = appointmentSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
     const appointment = await prisma.truckAppointment.create({
-      data: { truckingCompany, driverName, licensePlate, appointmentTime, status, containerId },
+      data: validation.data,
     });
     res.json(appointment);
   } catch (error) {
@@ -24,12 +38,15 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { truckingCompany, driverName, licensePlate, appointmentTime, status, containerId } = req.body;
   try {
+    const { id } = req.params;
+    const validation = appointmentSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.issues });
+    }
     const appointment = await prisma.truckAppointment.update({
       where: { id },
-      data: { truckingCompany, driverName, licensePlate, appointmentTime, status, containerId },
+      data: validation.data,
     });
     res.json(appointment);
   } catch (error) {

@@ -30,12 +30,14 @@ model Task {
   id          String @id @default(cuid())
   title       String
   description String
-  status      String
+  status      TaskStatus @default(PENDING)
   assignee    String
   container   Container? @relation(fields: [containerId], references: [id])
   containerId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([containerId])
 }
 
 model TruckAppointment {
@@ -44,11 +46,13 @@ model TruckAppointment {
   driverName      String
   licensePlate    String
   appointmentTime DateTime
-  status          String
+  status          AppointmentStatus @default(SCHEDULED)
   container       Container @relation(fields: [containerId], references: [id])
   containerId     String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([containerId])
 }
 
 model EdiMessage {
@@ -58,16 +62,20 @@ model EdiMessage {
   container   Container @relation(fields: [containerId], references: [id])
   containerId String
   createdAt   DateTime @default(now())
+
+  @@index([containerId])
 }
 
 model CustomsInspection {
   id          String @id @default(cuid())
-  status      String
+  status      InspectionStatus @default(PENDING)
   notes       String
   inspectedBy String
   container   Container @relation(fields: [containerId], references: [id])
   containerId String
   createdAt   DateTime @default(now())
+
+  @@index([containerId])
 }
 
 model DamageReport {
@@ -78,6 +86,8 @@ model DamageReport {
   container   Container @relation(fields: [containerId], references: [id])
   containerId String
   createdAt   DateTime @default(now())
+
+  @@index([containerId])
 }
 
 model Location {
@@ -97,4 +107,25 @@ model History {
   container   Container @relation(fields: [containerId], references: [id])
   containerId String
   createdAt   DateTime @default(now())
+
+  @@index([containerId])
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum InspectionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
 }
