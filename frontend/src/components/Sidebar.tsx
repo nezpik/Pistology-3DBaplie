@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import {
-  FaCube,
   FaMapMarkerAlt,
   FaHistory,
   FaExclamationTriangle,
@@ -12,39 +11,41 @@ import {
 } from 'react-icons/fa';
 
 const Sidebar = () => {
+    const navLinkClasses = "flex items-center py-2 px-4 rounded hover:bg-primary-700";
+    const activeNavLinkClasses = "bg-primary-700";
+
   return (
-    <div className="w-64 h-screen bg-gray-800 text-white flex flex-col">
-      <div className="p-4 border-b border-gray-700">
-        <h1 className="text-2xl font-bold">TOS</h1>
+    <div className="w-64 h-screen bg-primary-900 text-white flex flex-col">
+      <div className="p-4 border-b border-primary-700">
+        <Link to="/" className="text-2xl font-bold tracking-wider">
+            <span className="text-primary-400">T</span>erminal<span className="text-primary-400">OS</span>
+        </Link>
       </div>
-      <nav className="flex-1 p-4">
-        <Link to="/" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-          <FaCube className="mr-3" /> BAPLIE Visualizer
-        </Link>
-        <Link to="/location/TEST-CONTAINER" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+      <nav className="flex-1 p-4 space-y-2">
+        <NavLink to="/tasks" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+            <FaTasks className="mr-3" /> Task Dashboard
+        </NavLink>
+        <NavLink to="/location/TEST-CONTAINER" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaMapMarkerAlt className="mr-3" /> Container Location
-        </Link>
-        <Link to="/history/TEST-CONTAINER" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+        </NavLink>
+        <NavLink to="/history/TEST-CONTAINER" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaHistory className="mr-3" /> Container History
-        </Link>
-        <Link to="/damage/TEST-CONTAINER" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+        </NavLink>
+        <NavLink to="/damage/TEST-CONTAINER" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaExclamationTriangle className="mr-3" /> Damage Reports
-        </Link>
-        <Link to="/edi/TEST-CONTAINER" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+        </NavLink>
+        <NavLink to="/edi/TEST-CONTAINER" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaFileAlt className="mr-3" /> EDI Hub
-        </Link>
-        <Link to="/customs/TEST-CONTAINER" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+        </NavLink>
+        <NavLink to="/customs/TEST-CONTAINER" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaCheckSquare className="mr-3" /> Customs Inspections
-        </Link>
-        <Link to="/tasks" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-          <FaTasks className="mr-3" /> Task Dashboard
-        </Link>
-        <Link to="/tas" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+        </NavLink>
+        <NavLink to="/tas" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaTruck className="mr-3" /> TAS
-        </Link>
-        <Link to="/tas/TRUCKING-COMPANY-A" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
+        </NavLink>
+        <NavLink to="/tas/TRUCKING-COMPANY-A" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
           <FaBuilding className="mr-3" /> TAS (Company View)
-        </Link>
+        </NavLink>
       </nav>
     </div>
   );
