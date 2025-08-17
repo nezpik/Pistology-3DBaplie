@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import BaplieMessageView from '../components/BaplieMessageView';
+import CoarriMessageView from '../components/CoarriMessageView';
+import CodecoMessageView from '../components/CodecoMessageView';
 
 const EdiHub = () => {
   const { containerId } = useParams<{ containerId: string }>();
   const [messages, setMessages] = useState<any[]>([]);
   const [messageType, setMessageType] = useState('');
   const [content, setContent] = useState('');
+  const [visibleMessages, setVisibleMessages] = useState({});
+
+  const toggleVisibility = (id) => {
+    setVisibleMessages(prev => ({...prev, [id]: !prev[id]}));
+  }
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -44,7 +52,7 @@ const EdiHub = () => {
         <div className="flex flex-col gap-2">
           <input
             type="text"
-            placeholder="Message Type"
+            placeholder="Message Type (e.g., BAPLIE, COARRI, CODECO)"
             className="p-2 border rounded"
             value={messageType}
             onChange={(e) => setMessageType(e.target.value)}
@@ -69,7 +77,24 @@ const EdiHub = () => {
           <div key={message.id} className="border p-4 mb-4 rounded">
             <p><strong>Type:</strong> {message.messageType}</p>
             <p><strong>Date:</strong> {new Date(message.createdAt).toLocaleString()}</p>
-            <pre className="bg-gray-100 p-2 rounded mt-2">{message.content}</pre>
+
+            {(() => {
+                switch (message.messageType.toUpperCase()) {
+                    case 'BAPLIE':
+                        return <BaplieMessageView message={message} />;
+                    case 'COARRI':
+                        return <CoarriMessageView message={message} />;
+                    case 'CODECO':
+                        return <CodecoMessageView message={message} />;
+                    default:
+                        return <pre className="bg-gray-100 p-2 rounded mt-2">{message.content}</pre>;
+                }
+            })()}
+
+            <button onClick={() => toggleVisibility(message.id)} className="text-sm text-blue-500 mt-2">
+                {visibleMessages[message.id] ? 'Hide' : 'Show'} Raw Content
+            </button>
+            {visibleMessages[message.id] && <pre className="bg-gray-100 p-2 rounded mt-2">{message.content}</pre>}
           </div>
         ))}
       </div>

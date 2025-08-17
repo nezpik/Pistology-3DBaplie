@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import BaplieVisualizer from './pages/BaplieVisualizer';
 import ContainerLocation from './pages/ContainerLocation';
 import ContainerHistory from './pages/ContainerHistory';
 import DamageReport from './pages/DamageReport';
@@ -14,11 +13,11 @@ import './index.css';
 function App() {
   return (
     <Router>
-      <div className="App flex h-screen bg-gray-100">
+      <div className="App flex h-screen bg-secondary-100 text-gray-800">
         <Sidebar />
         <main className="flex-1 p-8 overflow-y-auto">
           <Routes>
-            <Route path="/" element={<BaplieVisualizer />} />
+            <Route path="/" element={<TaskDashboard />} />
             <Route path="/location/:containerId" element={<ContainerLocation />} />
             <Route path="/history/:containerId" element={<ContainerHistory />} />
             <Route path="/damage/:containerId" element={<DamageReport />} />

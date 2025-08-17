@@ -10,6 +10,15 @@ router.get('/', async (req, res) => {
   res.json(appointments);
 });
 
+router.get('/company/:companyName', async (req, res) => {
+    const { companyName } = req.params;
+    const appointments = await prisma.truckAppointment.findMany({
+        where: { truckingCompany: companyName },
+        orderBy: { appointmentTime: 'asc' },
+    });
+    res.json(appointments);
+});
+
 import { z } from 'zod';
 import { AppointmentStatus } from '@prisma/client';
 
